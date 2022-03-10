@@ -1,3 +1,4 @@
 src/main.exe
 .vscode/c_cpp_properties.json
 src/imvec.main.exe
+.vscode/settings.json

@@ -7,13 +7,13 @@
 // without v<t,2> hiding the storage of its base: v<t,1>, hence storage in the concrete class
 // this way does actually work! its a bit confusing, and requires a bunch of friending of
 // base classes so that the crtp base can access protected members of its concrete derived class.
-// although it lets us share x() y() z() accessors (vec<t,2> just inheirits x() and adds in a y())
+// although it lets us share x() y() z() accessors (vec<t,2> just inherits x() and adds in a y())
 // its actually a fair bit less consise and more confusing due to the distinction between the concrete size (cN) and the
 // 'at least' lexical size...
 // we can now not share constructors - because only the most derived type has any storage
 // it compiles and optimizes well.
-// we could also share swizzles via inheiritance (put them in _vec<..> not vec<T,{1,2,3,4}>)... but it would actually be pretty confusing...
-// I think techhnically the macros could expand fewer lines in this world, and the compile might actually
+// we could also share swizzles via inheritance (put them in _vec<..> not vec<T,{1,2,3,4}>)... but it would actually be pretty confusing...
+// I think technically the macros could expand fewer lines in this world, and the compile might actually
 // go just a bit faster - but probably not worth it!
 namespace __fancy_but_bad {
     template <class V, typename T, unsigned short N>

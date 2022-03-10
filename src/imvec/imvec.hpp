@@ -4,10 +4,10 @@
 #include <vector>
 // some goals:
 // vector math (NOT as in 'std::vector' - more like GLSL's vec3)
-// immutable! (explictly disallow someVector.x = whatever, or someVector[1] = whatever)
+// immutable! (explicitly disallow someVector.x = whatever, or someVector[1] = whatever)
 // consise, but with a convenient interface
 // no vtables! pack down into the minimum storage! (sizeof(vec<float,3>)==sizeof(float[3]) )
-// consider thoughts like 'free your functions' and 'no inheritence', which are very interesting to me at the moment
+// consider thoughts like 'free your functions' and 'no inheritance', which are very interesting to me at the moment
 // I would love to use c++20 modules, and perhaps I will someday!
 namespace imvec {
     namespace _deets {
@@ -85,14 +85,14 @@ namespace imvec {
     // the guideline of 'perfer composition over inheritance' suggests that I just cram a _vec inside the templated vec
     // but feels silly and doesn't solve my re-implementation of common interface problem
     // compiling this on godbolt suggests that there is no penalty of any kind for this use of non-virtual inheritance,
-    // so Im gonna go with it. also... truely, a vec "is a" _vec...
+    // so Im gonna go with it. also... truly, a vec "is a" _vec...
     template <class V, typename T, unsigned short N>
     class _vec {
         protected:
         T data[N];
         // private default constructor
         // the plan is to call this from a safe place,
-        // then pass the unitialized data array to a helper that will fill it in
+        // then pass the uninitialized data array to a helper that will fill it in
         _vec(){}
 
         // a private static helper to hide 2 lines of boilerplate per function:

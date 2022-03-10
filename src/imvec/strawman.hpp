@@ -1,14 +1,14 @@
 #include <vector>
 // DONT USE THIS FILE - ITS JUST A THOUGHT!
 // USE imvec.hpp instead
-// for giggles, I've re-immplemented a small portion
+// for giggles, I've re-implemented a small portion
 // of the vec class based on the idea of sharing code
 // by way of vec<T,2> extends vec<T,1>
-// doing this immediatly runs into a problem: we cannot
+// doing this immediately runs into a problem: we cannot
 // share the storage and have it be a static size - 
 // if vec<T,2> declared data as T data[2], that would just hide
 // the base class's T data[1].
-// instead, we try dyanamic storage - std::vector<T>
+// instead, we try dynamic storage - std::vector<T>
 // this does work, but if you check out on godbolt.org, 
 // we pay a hefty price. even our free-function operator+
 // cant get optimized out at -O3 by clang13, wheras the imvec.hpp
