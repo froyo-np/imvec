@@ -1,0 +1,5 @@
+{
+    compiler_id: "clang",
+    cxx_version: "c++17",
+    flags:"-g",
+}

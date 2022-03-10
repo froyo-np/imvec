@@ -1,5 +1,6 @@
 #include <vector>
-
+// DONT USE THIS FILE - ITS JUST A THOUGHT!
+// USE imvec.hpp instead
 // for giggles, I've re-immplemented a small portion
 // of the vec class based on the idea of sharing code
 // by way of vec<T,2> extends vec<T,1>
@@ -18,7 +19,7 @@
 // can this idea be fixed with crtp style thoughts of the 
 // approach in imvec.hpp?
 
-namespace strawman_vector {
+namespace __strawman_vector {
 template <typename T, unsigned short N>
 class _vec {
     protected:

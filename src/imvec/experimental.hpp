@@ -1,4 +1,6 @@
 #include "swizzles.h"
+// DONT USE THIS FILE - ITS JUST A THOUGHT!
+// USE imvec.hpp instead
 // lets try to combine the idea that vec<T,2> extends vec<T,1>
 // with static storage in the concrete class.
 // I can think of no way to put static storage in any base class with this inheritance method
@@ -13,7 +15,7 @@
 // we could also share swizzles via inheiritance (put them in _vec<..> not vec<T,{1,2,3,4}>)... but it would actually be pretty confusing...
 // I think techhnically the macros could expand fewer lines in this world, and the compile might actually
 // go just a bit faster - but probably not worth it!
-namespace fancy {
+namespace __fancy_but_bad {
     template <class V, typename T, unsigned short N>
     class __vec {
         protected:

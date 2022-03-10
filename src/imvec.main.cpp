@@ -1,4 +1,4 @@
-#include "imvec.hpp"
+#include "imvec/imvec.hpp"
 
 using namespace imvec;
 int main(){

@@ -10,12 +10,11 @@
 // consider thoughts like 'free your functions' and 'no inheritence', which are very interesting to me at the moment
 // I would love to use c++20 modules, and perhaps I will someday!
 namespace imvec {
-
     namespace _deets {
         // inline templated math ops, which
         // when used as a fn-ptr template arg
         // will (hopefully) decay into their nice inline forms
-        // if I had a nice magic module :private fragment, I could hide all this...
+        // if I had a nice c++20 module :private fragment, I could hide all this...
         // but for now - hopefully no one bothers with _deets
         template<typename T>
         inline T add(const T& a, const T& b){
@@ -195,17 +194,6 @@ namespace imvec {
         public:
         vec(T v[N]) : _secret_base::_vec<vec<T,N>,T,N>(v) {}
     };
-
-    // time for another quiz:
-    // is, for example, a vec<T,3> an extension of a vec<T,2>? 
-    // the answer is that is very nearly impossible!
-    // recall that all specializations of vec<T,N> would be completely independant!
-    // thus - if vec<t,3> extended vec<t,2> - then there would exist two members 'data'
-    // data[2] and data[3] - no no no!
-    // probably the most compact way to do swizzles over vectors of 1,2,3, and 4
-    // would be macro expansion, although that is considered highly un-modern...
-    // also (because no modules) all macros are viral
-    // is the answer another strange layer of CRTP?
     
     // a single component getter
     #define _GETTER_PLZ(n,i) T n()const {return this->data[i];}
@@ -277,6 +265,7 @@ namespace imvec {
         vec(T x, vec<T,3> yzw) : vec<T,4>(x,yzw.x(),yzw.y(),yzw.z()){}
         vec(vec<T,3> xyz, T w) : vec<T,4>(xyz.x(),xyz.y(),xyz.z(),w){}
         vec(vec<T,2> xy,T z, T w) : vec<T,4>(xy.x(),xy.y(),z,w){}
+        vec(T x, T y,vec<T,2> zw) : vec<T,4>(x,y,zw.x(),zw.y()){}
         // single component getters
         _GETTER_PLZ(x,0);
         _GETTER_PLZ(y,1);
