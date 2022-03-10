@@ -1,6 +1,7 @@
 #pragma once
 #include "swizzles.h"
 #include <math.h>
+#include <vector>
 // some goals:
 // vector math (NOT as in 'std::vector' - more like GLSL's vec3)
 // immutable! (explictly disallow someVector.x = whatever, or someVector[1] = whatever)
@@ -71,7 +72,7 @@ namespace imvec {
             return tmp;
         }
     }; // end _deets namespace
-
+    namespace _secret_base {
     /// overview:
     // we want an interface like vec<float,3>
     // we want specializations and swizzles, like v.yzx() - which is only available
@@ -185,13 +186,14 @@ namespace imvec {
             return this->direction();
         }
     };
+    }; // end namespace _secret_base
     template <typename T, unsigned short N>
-    class vec : public _vec<vec<T,N>,T,N> {
+    class vec : public _secret_base::_vec<vec<T,N>,T,N> {
         protected:
-        friend class _vec<vec<T,N>,T,N>;
-        vec() : _vec<vec<T,N>,T,N>() {}
+        friend class _secret_base::_vec<vec<T,N>,T,N>;
+        vec() : _secret_base::_vec<vec<T,N>,T,N>() {}
         public:
-        vec(T v[N]) : _vec<vec<T,N>,T,N>(v) {}
+        vec(T v[N]) : _secret_base::_vec<vec<T,N>,T,N>(v) {}
     };
 
     // time for another quiz:
@@ -208,16 +210,16 @@ namespace imvec {
     // a single component getter
     #define _GETTER_PLZ(n,i) T n()const {return this->data[i];}
     // boilerplate for connecting up the default constructor
-    #define _DEFAULT_CONSTRUCTOR(n) vec() : _vec<vec<T,n>,T,n>() {}
+    #define _DEFAULT_CONSTRUCTOR(n) vec() : _secret_base::_vec<vec<T,n>,T,n>() {}
     // boilerplate for connecting up the array-based constructor
-    #define _AR_CONSTRUCTOR(n) vec(T v[n]) : _vec<vec<T,n>,T,n>(v) {}
+    #define _AR_CONSTRUCTOR(n) vec(T v[n]) : _secret_base::_vec<vec<T,n>,T,n>(v) {}
     // attempt to declare our base class as our friend, so that we may
     // call our own protected methods from it via crtp
-    #define _FRIEND_DECL(n) friend class _vec<vec<T,n>,T,n>
+    #define _FRIEND_DECL(n) friend class _secret_base::_vec<vec<T,n>,T,n>
 
     // the first specialization: vec2
     template <typename T>
-    class vec<T,2> : public _vec<vec<T,2>,T,2> {
+    class vec<T,2> : public _secret_base::_vec<vec<T,2>,T,2> {
         protected:
         _DEFAULT_CONSTRUCTOR(2);
         _FRIEND_DECL(2);
@@ -236,7 +238,7 @@ namespace imvec {
         _ALL_SWIZZLES_2
     };
     template <typename T>
-    class vec<T,3> : public _vec<vec<T,3>,T,3> {
+    class vec<T,3> : public _secret_base::_vec<vec<T,3>,T,3> {
         protected:
         _FRIEND_DECL(3);
         _DEFAULT_CONSTRUCTOR(3)
@@ -249,6 +251,8 @@ namespace imvec {
             this->data[1]=y;
             this->data[2]=z;
         }
+        vec(T x, vec<T,2> yz) : vec<T,4>(x,yz.x(),yz.y()){}
+        vec(vec<T,2> xy,T z) : vec<T,4>(xy.x(),xy.y(),z){}
         // single component getters
         _GETTER_PLZ(x,0);
         _GETTER_PLZ(y,1);
@@ -257,7 +261,7 @@ namespace imvec {
         _ALL_SWIZZLES_3
     };
     template <typename T>
-    class vec<T,4> : public _vec<vec<T,4>,T,4> {
+    class vec<T,4> : public _secret_base::_vec<vec<T,4>,T,4> {
         protected:
         _DEFAULT_CONSTRUCTOR(4)
         _FRIEND_DECL(4);
@@ -270,6 +274,9 @@ namespace imvec {
             this->data[2]=z;
             this->data[3]=w;
         }
+        vec(T x, vec<T,3> yzw) : vec<T,4>(x,yzw.x(),yzw.y(),yzw.z()){}
+        vec(vec<T,3> xyz, T w) : vec<T,4>(xyz.x(),xyz.y(),xyz.z(),w){}
+        vec(vec<T,2> xy,T z, T w) : vec<T,4>(xy.x(),xy.y(),z,w){}
         // single component getters
         _GETTER_PLZ(x,0);
         _GETTER_PLZ(y,1);

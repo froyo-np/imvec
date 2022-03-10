@@ -6,7 +6,7 @@ int main(){
     float zero[3] = {0,0,0};
     float oneTwoThree[3] = {1,2,3};
     vec<float,3> test(oneTwoThree);
-    vec<float,3> abc(1,2,3);
+    //vec<float,3> abc(1,2,3);
     auto b = test + test;
     auto c = test.dot(b);
     auto d = test * test;
@@ -14,7 +14,8 @@ int main(){
     
     vec<float,4> rgba(3.0f,2.,e.y(),-4);
     vec<float,2> pos = rgba.wz()*rgba.xz();
-    return (int)pos.length();
+    vec<float,2> cpy(pos); // default copy constructor?
+    return (int)cpy.length();
 
 
 }
