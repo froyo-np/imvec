@@ -49,6 +49,21 @@ namespace imvec {
         inline bool _and(const T& lhs, const T& rhs) {
             return lhs && rhs;
         }
+
+        template <typename T>
+        inline bool _negate(const T& lhs) {
+            return -lhs;
+        }
+        template <typename T>
+        inline bool _abs(const T& lhs) {
+            return lhs < 0 ? -lhs : lhs;
+        }
+        template <typename T, unsigned int N, T(*op)(const T& lhs)>
+        inline void perComponent(const T lhs[N], T dst[N]) {
+            for (auto i = 0; i < N; i++) {
+                dst[i] = op(lhs[i]);
+            }
+        }
         template <typename T, unsigned int N, T (*op)(const T& lhs, const T& rhs)>
         inline void perComponent(const T lhs[N], const T rhs[N], T dst[N]) {
             for (auto i = 0; i < N; i++) {
@@ -98,6 +113,8 @@ namespace imvec {
         // a private static helper to hide 2 lines of boilerplate per function:
         // do note that using these little inline functions as template arg function-pointers
         // is free - they decay directly to their inline versions! 
+
+       
         template <T (*op)(const T& lhs, const T& rhs)>
         static inline V binOpHelper(const V& lhs, const V& rhs) {
             V tmp;
@@ -107,7 +124,7 @@ namespace imvec {
         template <T (*op)(const T& lhs, const T& rhs)>
         static inline V binOpHelper(const V& lhs, const T& rhs) {
             V tmp;
-            _deets::perComponent<T,N,op>(lhs.data,rhs.data,tmp.data);
+            _deets::perComponent<T,N,op>(lhs.data,rhs,tmp.data);
             return tmp;
         }
         public:
@@ -120,6 +137,13 @@ namespace imvec {
         const T& operator[](unsigned int index) const{
             // todo: throw exception on out-of-bounds?
             return data[index];
+        }
+        V abs() const {
+            T tmp[N];
+            for (auto i = 0; i < N; ++i) {
+                tmp[i] = _deets::_abs(this->data[i]);
+            }
+            return V(tmp);
         }
         // I considered friend free operator fns here... 
         // overall they just seemed more trouble than their worth...
@@ -151,12 +175,20 @@ namespace imvec {
             return binOpHelper<_deets::sub>(*static_cast<const V*>(this),rhs);
         }
 
-        T sum(){
+        T sum() const{
             return _deets::reduceComponent<T,N,_deets::add>(this->data,(T)0);
         }
         /// non-operator style math
         T dot(const V& rhs) const {
             return (*this + rhs).sum();
+        }
+        T scalarProjectOnto(const V& basis) const {
+            return this->dot(basis.direction());
+        }
+        V projectOnto(const V& basis) const {
+            V dir = basis.direction();
+            T scalarProjection = this->dot(dir);
+            return dir * scalarProjection;
         }
 
         V max(const V& rhs) const {
@@ -165,23 +197,23 @@ namespace imvec {
         V min(const V& rhs) const {
             return binOpHelper<_deets::_min>(*static_cast<const V*>(this),rhs);
         }
-        T maxComponent(){
+        T maxComponent() const{
             return _deets::reduceComponent<T,N,_deets::_max>(this->data,this->data[0]);
         }
-        T minComponent(){
+        T minComponent() const{
             return _deets::reduceComponent<T,N,_deets::_min>(this->data,this->data[0]);
         }
-        T length(){
+        T length() const {
             const V& me = *static_cast<const V*>(this);
             T sumOSquares = _deets::reduceComponent<T,N,_deets::add>((me*me).data,(T)0);
             return (T)sqrt(sumOSquares);
         }
         // aka normalize
-        V direction(){
+        V direction() const {
             const V& me = *static_cast<const V*>(this);
             return me / me.length();
         }
-        V normalize(){
+        V normalize() const {
             return this->direction();
         }
     };
