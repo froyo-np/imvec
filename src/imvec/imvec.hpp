@@ -108,7 +108,11 @@ namespace imvec {
         // private default constructor
         // the plan is to call this from a safe place,
         // then pass the uninitialized data array to a helper that will fill it in
-        _vec(){}
+        _vec(){
+            for (unsigned short i = 0; i < N; ++i) {
+                data[i] = T();
+            }
+        }
 
         // a private static helper to hide 2 lines of boilerplate per function:
         // do note that using these little inline functions as template arg function-pointers
@@ -241,10 +245,10 @@ namespace imvec {
     template <typename T>
     class vec<T,2> : public _secret_base::_vec<vec<T,2>,T,2> {
         protected:
-        _DEFAULT_CONSTRUCTOR(2);
         _FRIEND_DECL(2);
         public:
         // constructors!
+        _DEFAULT_CONSTRUCTOR(2);
         _AR_CONSTRUCTOR(2);
         vec(T x, T y){
             this->data[0]=x;
@@ -261,9 +265,10 @@ namespace imvec {
     class vec<T,3> : public _secret_base::_vec<vec<T,3>,T,3> {
         protected:
         _FRIEND_DECL(3);
-        _DEFAULT_CONSTRUCTOR(3)
+        
         public:
         // constructors!
+        _DEFAULT_CONSTRUCTOR(3)
         _AR_CONSTRUCTOR(3)
         
         vec(T x, T y, T z){
@@ -271,8 +276,15 @@ namespace imvec {
             this->data[1]=y;
             this->data[2]=z;
         }
-        vec(T x, vec<T,2> yz) : vec<T,4>(x,yz.x(),yz.y()){}
-        vec(vec<T,2> xy,T z) : vec<T,4>(xy.x(),xy.y(),z){}
+        vec(T x, vec<T,2> yz) : vec<T,3>(x,yz.x(),yz.y()){}
+        vec(vec<T,2> xy,T z) : vec<T,3>(xy.x(),xy.y(),z){}
+        
+        static vec<T, 3> cross(const vec<T, 3>& a, const vec<T, 3>& b) {
+            return vec<T, 3>(
+                a.y() * b.z() - (a.z() * b.y()),
+                a.z() * b.x() - (a.x() * b.z()),
+                a.x() * b.y() - (a.y() * b.x()));
+        }
         // single component getters
         _GETTER_PLZ(x,0);
         _GETTER_PLZ(y,1);
@@ -283,10 +295,11 @@ namespace imvec {
     template <typename T>
     class vec<T,4> : public _secret_base::_vec<vec<T,4>,T,4> {
         protected:
-        _DEFAULT_CONSTRUCTOR(4)
+        
         _FRIEND_DECL(4);
         public:
         // constructors!
+        _DEFAULT_CONSTRUCTOR(4)
         _AR_CONSTRUCTOR(4)
         vec(T x, T y, T z, T w){
             this->data[0]=x;
