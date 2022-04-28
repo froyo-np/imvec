@@ -184,7 +184,7 @@ namespace imvec {
         }
         /// non-operator style math
         T dot(const V& rhs) const {
-            return (*this + rhs).sum();
+            return (*this * rhs).sum();
         }
         T scalarProjectOnto(const V& basis) const {
             return this->dot(basis.direction());
