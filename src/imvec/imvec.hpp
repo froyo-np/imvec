@@ -195,10 +195,10 @@ namespace imvec {
             return dir * scalarProjection;
         }
 
-        V max(const V& rhs) const {
+        V Max(const V& rhs) const {
             return binOpHelper<_deets::_max>(*static_cast<const V*>(this),rhs);
         }
-        V min(const V& rhs) const {
+        V Min(const V& rhs) const {
             return binOpHelper<_deets::_min>(*static_cast<const V*>(this),rhs);
         }
         T maxComponent() const{
